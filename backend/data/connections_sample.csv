@@ -1,0 +1,3 @@
+source_id,destination_id,distance_km,travel_time_minutes,line,type
+demo_a,demo_b,1.1,2.0,Demo Line,ride
+demo_b,demo_c,0.9,1.8,Demo Line,ride

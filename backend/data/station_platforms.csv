@@ -1,0 +1,23 @@
+station_id,station_name,line,platform_number,direction_toward,source_url,checked_at
+dmrc_49,New Delhi,YELLOW,1,Millennium City Centre Gurugram,https://delhimetrorail.com/station/NDI,2026-11-11
+dmrc_49,New Delhi,YELLOW,2,Samaypur Badli,https://delhimetrorail.com/station/NDI,2026-11-11
+dmrc_56,Dilli Haat - INA,YELLOW,1,Millennium City Centre Gurugram,https://delhimetrorail.com/station/INA,2026-11-11
+dmrc_56,Dilli Haat - INA,YELLOW,2,Samaypur Badli,https://delhimetrorail.com/station/INA,2026-11-11
+dmrc_56,Dilli Haat - INA,PINK,3,Shiv Vihar / Maujpur-Babarpur,https://delhimetrorail.com/station/INA,2026-11-11
+dmrc_56,Dilli Haat - INA,PINK,4,Majlis Park / Yamuna Vihar,https://delhimetrorail.com/station/INA,2026-11-11
+dmrc_52,Central Secretariat,YELLOW,1,Millennium City Centre Gurugram,https://delhimetrorail.com/station/CTST,2026-11-11
+dmrc_52,Central Secretariat,YELLOW,2,Samaypur Badli,https://delhimetrorail.com/station/CTST,2026-11-11
+dmrc_52,Central Secretariat,VIOLET,3,Raja Nahar Singh (Ballabhgarh),https://delhimetrorail.com/station/CTST,2026-11-11
+dmrc_52,Central Secretariat,VIOLET,4,Kashmere Gate,https://delhimetrorail.com/station/CTST,2026-11-11
+dmrc_59,Hauz Khas,YELLOW,1,Millennium City Centre Gurugram,https://delhimetrorail.com/station/HKS,2026-11-11
+dmrc_59,Hauz Khas,YELLOW,2,Samaypur Badli,https://delhimetrorail.com/station/HKS,2026-11-11
+dmrc_59,Hauz Khas,MAGENTA,3,Botanical Garden,https://delhimetrorail.com/station/HKS,2026-11-11
+dmrc_59,Hauz Khas,MAGENTA,4,Janakpuri West / Krishna Park Extension,https://delhimetrorail.com/station/HKS,2026-11-11
+dmrc_92,Mandi House,VIOLET,3,Raja Nahar Singh (Ballabhgarh),https://delhimetrorail.com/station/MDHS,2026-11-11
+dmrc_92,Mandi House,VIOLET,4,Kashmere Gate,https://delhimetrorail.com/station/MDHS,2026-11-11
+dmrc_92,Mandi House,BLUE,1,Noida Electronic City / Vaishali,https://delhimetrorail.com/station/MDHS,2026-11-11
+dmrc_92,Mandi House,BLUE,2,Dwarka Sector 21,https://delhimetrorail.com/station/MDHS,2026-11-11
+dmrc_127,Lajpat Nagar,VIOLET,1,Raja Nahar Singh (Ballabhgarh),https://delhimetrorail.com/station/LJPN,2026-11-11
+dmrc_127,Lajpat Nagar,VIOLET,2,Kashmere Gate,https://delhimetrorail.com/station/LJPN,2026-11-11
+dmrc_127,Lajpat Nagar,PINK,3,Shiv Vihar,https://delhimetrorail.com/station/LJPN,2026-11-11
+dmrc_127,Lajpat Nagar,PINK,4,Majlis Park / Yamuna Vihar,https://delhimetrorail.com/station/LJPN,2026-11-11
