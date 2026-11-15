@@ -4,14 +4,16 @@
 #include <stdexcept>
 #include <unordered_set>
 
+using namespace std;
+
 namespace metromitra {
 
-std::vector<std::string> breadthFirstTraversal(const Graph& graph,
-                                               const std::string& startId) {
-    if (!graph.findStation(startId)) throw std::invalid_argument("Unknown start station: " + startId);
-    std::vector<std::string> order;
-    std::queue<std::string> pending;
-    std::unordered_set<std::string> visited{startId};
+vector<string> breadthFirstTraversal(const Graph& graph,
+                                               const string& startId) {
+    if (!graph.findStation(startId)) throw invalid_argument("Unknown start station: " + startId);
+    vector<string> order;
+    queue<string> pending;
+    unordered_set<string> visited{startId};
     pending.push(startId);
     while (!pending.empty()) {
         auto current = pending.front();
@@ -24,12 +26,12 @@ std::vector<std::string> breadthFirstTraversal(const Graph& graph,
     return order;
 }
 
-std::vector<std::string> depthFirstTraversal(const Graph& graph,
-                                             const std::string& startId) {
-    if (!graph.findStation(startId)) throw std::invalid_argument("Unknown start station: " + startId);
-    std::vector<std::string> order;
-    std::vector<std::string> pending{startId};
-    std::unordered_set<std::string> visited;
+vector<string> depthFirstTraversal(const Graph& graph,
+                                             const string& startId) {
+    if (!graph.findStation(startId)) throw invalid_argument("Unknown start station: " + startId);
+    vector<string> order;
+    vector<string> pending{startId};
+    unordered_set<string> visited;
     while (!pending.empty()) {
         auto current = pending.back();
         pending.pop_back();

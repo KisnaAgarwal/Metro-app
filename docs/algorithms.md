@@ -1,18 +1,13 @@
-# Algorithm plan
+# Routing algorithms
 
-| Algorithm | Purpose | Time | Space |
-|---|---|---:|---:|
-| BFS | Minimum-edge paths / exploration | O(V+E) | O(V) |
-| DFS | Traversal and connectivity | O(V+E) | O(V) |
-| Dijkstra (binary heap) | Nonnegative distance or time costs | O((S+F) log S) | O(S+F) |
-| Fewest transfers | Lexicographic or expanded-state shortest path | O((V+E) log V) | O(V+E) |
-| A* | Destination-directed weighted routing | O((V+E) log V) typical; worst-case Dijkstra | O(V) |
-| Floyd-Warshall | All-pairs costs | O(V^3) | O(V^2) |
+The route finder uses min-heap Dijkstra with one best record per station. Distance mode minimizes CSV edge distances. Time mode minimizes CSV edge times without extra dwell or line-change allowances. Explicit transfer and walking edge times remain included.
 
-For all route searches, parent state must include the platform vertex and route metrics need to be recomputed from the reconstructed path. A* requires validated coordinates and an admissible geographic lower bound; it is unavailable for this synthetic dataset.
+The heap stores (cost, station ID) pairs. An improved route adds a new entry; outdated entries are skipped when popped. Previous stations and edges reconstruct the selected path.
 
-The current BFS and DFS APIs return the traversal order of the connected component containing the supplied start vertex. They reject an unknown start ID. BFS explores in minimum-edge layers; neither traversal considers distance or time weights.
+Fewest-transfers mode is approximate because line-change cost depends on the arrival line and only one arrival is retained per station. Equal-cost candidates keep the first discovered path; there is no time tie-breaker.
 
-`shortestRoute` implements Dijkstra using a min-priority queue over `(station, incoming line)` states, with shortest-distance, fastest-time, and fewest-transfers objectives. Fewest-transfers minimizes line changes first and estimated travel time second. It reconstructs the path from parent links and totals both metrics. For time routing, continuing on the same line adds a configurable default dwell of 0.75 minutes (45 seconds) at each intermediate stop; it excludes the origin and destination. Changing lines at an implicit interchange adds 2 minutes for a two-line station or 3 minutes for a station serving three or more lines, replacing same-line dwell at that stop. Line count is used as a rough proxy for crowding because crowd observations are unavailable. Explicit transfer edges use their own travel-time weight. The algorithm reports route lines and interchange count. An unreachable destination returns an empty path. Ties select one valid optimal route; alternative-route enumeration is future work. Train waiting and actual transfer walking remain excluded.
+For distance/time searches, time is O((V+E) log(V+E)) and auxiliary space is O(V+E), accounting for duplicate heap entries. The network uses nonnegative weights.
 
-For the expanded Dijkstra state graph, `S` is the number of reachable station/incoming-line states and `F` is the number of state transitions.
+BFS and DFS remain educational traversal examples, each taking O(V+E) time and O(V) auxiliary space. They are not called by the browser route planner.
+
+See [the presentation guide](presentation_guide.md) for a worked example, a heap explanation, and questions to prepare for.

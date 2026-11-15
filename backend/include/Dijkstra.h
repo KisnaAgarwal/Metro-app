@@ -8,7 +8,7 @@
 namespace metromitra {
 
 enum class RouteObjective { Distance, TravelTime, FewestTransfers };
-constexpr double kDefaultStationDwellMinutes = 0.75; // User-selected 45-second assumption.
+
 
 struct RouteResult {
     std::vector<std::string> stationIds;
@@ -19,8 +19,8 @@ struct RouteResult {
     std::size_t transferCount = 0;
 };
 
-// Binary min-heap Dijkstra over station/incoming-line states: O((S+F) log S)
-// time and O(S+F) space, where S/F are states/transitions in the expanded graph.
+// Min-heap Dijkstra with one record per station: O((V+E) log(V+E)) time.
+// Distance and ride-time are optimal; fewest transfers is an approximation.
 RouteResult shortestRoute(const Graph& graph, const std::string& sourceId,
                           const std::string& destinationId, RouteObjective objective);
 

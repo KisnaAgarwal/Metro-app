@@ -1,9 +1,11 @@
 #include "JsonOutput.h"
 #include <iostream>
 
+using namespace std;
+
 namespace metromitra {
-std::string jsonString(const std::string& value) {
-    std::string result = "\"";
+string jsonString(const string& value) {
+    string result = "\"";
     for (const unsigned char ch : value) {
         switch (ch) {
         case '"': result += "\\\""; break;
@@ -19,17 +21,17 @@ std::string jsonString(const std::string& value) {
     return result + '"';
 }
 
-void writeStationJson(const metromitra::Station& station) {
-    std::cout << "{\"id\":" << jsonString(station.id)
+void writeStationJson(const Station& station) {
+    cout << "{\"id\":" << jsonString(station.id)
               << ",\"name\":" << jsonString(station.name)
               << ",\"line\":" << jsonString(station.line)
               << ",\"latitude\":";
-    if (station.latitude) std::cout << *station.latitude;
-    else std::cout << "null";
-    std::cout << ",\"longitude\":";
-    if (station.longitude) std::cout << *station.longitude;
-    else std::cout << "null";
-    std::cout << ",\"interchange\":" << (station.interchange ? "true" : "false") << '}';
+    if (station.latitude) cout << *station.latitude;
+    else cout << "null";
+    cout << ",\"longitude\":";
+    if (station.longitude) cout << *station.longitude;
+    else cout << "null";
+    cout << ",\"interchange\":" << (station.interchange ? "true" : "false") << '}';
 }
 
 } // namespace metromitra

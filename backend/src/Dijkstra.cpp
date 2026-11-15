@@ -2,146 +2,110 @@
 
 #include <algorithm>
 #include <functional>
+#include <limits>
 #include <queue>
 #include <stdexcept>
-#include <tuple>
 #include <unordered_map>
+
+using namespace std;
 
 namespace metromitra {
 namespace {
-
-struct SearchRecord {
-    std::string stationId;
-    std::string incomingLine;
-    double cost = 0.0;
-    double tieCost = 0.0;
-    double distanceKm = 0.0;
-    double travelTimeMinutes = 0.0;
-    std::size_t transferCount = 0;
-    bool hasParent = false;
-    std::string parentKey;
-    Edge incomingEdge;
+// One row in our table for each station.
+struct StationRecord {
+    double cost = numeric_limits<double>::infinity();
+    string previousStation;
+    Edge previousEdge;
+    string arrivalLine;
 };
-
-std::string stateKey(const std::string& stationId, const std::string& line) {
-    return stationId + '\x1f' + line;
 }
 
-double interchangePenalty(const Station& station) {
-    const auto lineCount = static_cast<std::size_t>(
-        1 + std::count(station.line.begin(), station.line.end(), '|'));
-    return lineCount >= 3 ? 3.0 : 2.0;
-}
+RouteResult shortestRoute(const Graph& graph, const string& sourceId,
+                          const string& destinationId, RouteObjective objective) {
+    if (!graph.findStation(sourceId) || !graph.findStation(destinationId)) {
+        throw invalid_argument("Unknown starting or destination station");
+    }
 
-} // namespace
+    // 1. Start with cost 0 at the source. Other stations start at infinity.
+    unordered_map<string, StationRecord> best;
+    best[sourceId].cost = 0;
 
-RouteResult shortestRoute(const Graph& graph, const std::string& sourceId,
-                          const std::string& destinationId, RouteObjective objective) {
-    if (!graph.findStation(sourceId)) throw std::invalid_argument("Unknown source station: " + sourceId);
-    if (!graph.findStation(destinationId)) throw std::invalid_argument("Unknown destination station: " + destinationId);
+    // A min-heap gives us the cheapest station first.
+    // Each entry is (cost, station ID). greater makes the smallest cost come first.
+    using Entry = pair<double, string>;
+    priority_queue<Entry, vector<Entry>, greater<Entry>> pending;
+    pending.push({0, sourceId});
 
-    using QueueItem = std::tuple<double, double, std::string>;
-    std::priority_queue<QueueItem, std::vector<QueueItem>, std::greater<QueueItem>> frontier;
-    std::unordered_map<std::string, SearchRecord> records;
-    const auto startKey = stateKey(sourceId, "");
-    records.emplace(startKey, SearchRecord{sourceId, "", 0.0, 0.0, 0.0, 0.0, 0, false, {}, {}});
-    frontier.emplace(0.0, 0.0, startKey);
+    while (!pending.empty()) {
+        // 2. Take the cheapest station waiting in the heap.
+        const auto [cost, currentId] = pending.top();
+        pending.pop();
+        const auto current = best.at(currentId);
+        if (cost > current.cost) continue; // An older, more expensive heap entry.
+        if (currentId == destinationId) break;
 
-    while (!frontier.empty()) {
-        const auto [cost, tieCost, currentKey] = frontier.top();
-        frontier.pop();
-        const auto currentIt = records.find(currentKey);
-        if (currentIt == records.end() || cost != currentIt->second.cost || tieCost != currentIt->second.tieCost) continue;
-        const auto current = currentIt->second;
-
-        for (const auto& edge : graph.neighbors(current.stationId)) {
-            const auto* station = graph.findStation(current.stationId);
-            double addedTime = edge.travelTimeMinutes;
-            std::size_t addedTransfers = 0;
-            std::string nextLine = current.incomingLine;
-
-            if (edge.type == EdgeType::Transfer) {
-                // The edge's own time represents the explicitly modelled transfer.
-                ++addedTransfers;
-                nextLine.clear();
-            } else if (edge.type == EdgeType::Ride) {
-                if (!current.incomingLine.empty()) {
-                    if (current.incomingLine == edge.line) {
-                        addedTime += station->dwellTimeMinutes.value_or(kDefaultStationDwellMinutes);
-                    } else {
-                        addedTime += interchangePenalty(*station);
-                        ++addedTransfers;
-                    }
-                }
-                nextLine = edge.line;
+        // 3. Try each directly connected station.
+        for (const auto& edge : graph.neighbors(currentId)) {
+            bool changesLine = edge.type == EdgeType::Transfer;
+            if (edge.type == EdgeType::Ride && !current.arrivalLine.empty() &&
+                current.arrivalLine != edge.line) {
+                changesLine = true;
             }
 
-            const double edgeCost = objective == RouteObjective::Distance ? edge.distanceKm
-                : objective == RouteObjective::TravelTime ? addedTime
-                : static_cast<double>(addedTransfers);
-            const double edgeTieCost = objective == RouteObjective::FewestTransfers ? addedTime : 0.0;
-            const double candidate = current.cost + edgeCost;
-            const double candidateTieCost = current.tieCost + edgeTieCost;
-            const auto nextKey = stateKey(edge.destinationId, nextLine);
-            const auto old = records.find(nextKey);
-            if (old == records.end() || std::tie(candidate, candidateTieCost) <
-                                           std::tie(old->second.cost, old->second.tieCost)) {
-                SearchRecord next;
-                next.stationId = edge.destinationId;
-                next.incomingLine = nextLine;
-                next.cost = candidate;
-                next.tieCost = candidateTieCost;
-                next.distanceKm = current.distanceKm + edge.distanceKm;
-                next.travelTimeMinutes = current.travelTimeMinutes + addedTime;
-                next.transferCount = current.transferCount + addedTransfers;
-                next.hasParent = true;
-                next.parentKey = currentKey;
-                next.incomingEdge = edge;
-                records[nextKey] = std::move(next);
-                frontier.emplace(candidate, candidateTieCost, nextKey);
-            }
+            double edgeCost = edge.travelTimeMinutes;
+            if (objective == RouteObjective::Distance) edgeCost = edge.distanceKm;
+            if (objective == RouteObjective::FewestTransfers) edgeCost = changesLine ? 1 : 0;
+
+            const double newCost = cost + edgeCost;
+            auto& next = best[edge.destinationId];
+            if (newCost >= next.cost) continue;
+
+            // 4. Found a cheaper route: remember how we got here and try it later.
+            next.cost = newCost;
+            next.previousStation = currentId;
+            next.previousEdge = edge;
+            next.arrivalLine = current.arrivalLine;
+            if (edge.type == EdgeType::Ride) next.arrivalLine = edge.line;
+            if (edge.type == EdgeType::Transfer) next.arrivalLine.clear();
+            pending.push({newCost, edge.destinationId});
         }
     }
 
-    std::string destinationKey;
-    double destinationCost = 0.0;
-    bool found = false;
-    for (const auto& [key, record] : records) {
-        if (record.stationId != destinationId) continue;
-        if (!found || std::tie(record.cost, record.tieCost) <
-                          std::tie(destinationCost, records.at(destinationKey).tieCost)) {
-            found = true;
-            destinationCost = record.cost;
-            destinationKey = key;
-        }
-    }
-    if (!found) return {};
+    if (best.find(destinationId) == best.end()) return {}; // No route exists.
 
+    // 5. Follow previous stations from destination back to source, then reverse.
     RouteResult result;
-    const auto& finalRecord = records.at(destinationKey);
-    result.totalDistanceKm = finalRecord.distanceKm;
-    result.estimatedTravelTimeMinutes = finalRecord.travelTimeMinutes;
-    result.transferCount = finalRecord.transferCount;
-
-    std::vector<Edge> pathEdges;
-    for (std::string key = destinationKey;;) {
-        const auto& record = records.at(key);
-        result.stationIds.push_back(record.stationId);
-        if (!record.hasParent) break;
-        pathEdges.push_back(record.incomingEdge);
-        key = record.parentKey;
+    vector<Edge> routeEdges;
+    string stationId = destinationId;
+    while (stationId != sourceId) {
+        result.stationIds.push_back(stationId);
+        routeEdges.push_back(best.at(stationId).previousEdge);
+        stationId = best.at(stationId).previousStation;
     }
-    std::reverse(result.stationIds.begin(), result.stationIds.end());
-    std::reverse(pathEdges.begin(), pathEdges.end());
-    for (const auto& edge : pathEdges) {
-        result.segmentLines.push_back(edge.type == EdgeType::Ride ? edge.line
-            : edge.type == EdgeType::Transfer ? "TRANSFER" : "WALK");
-        if (edge.type == EdgeType::Ride &&
-            (result.linesUsed.empty() || result.linesUsed.back() != edge.line)) {
-            result.linesUsed.push_back(edge.line);
+    result.stationIds.push_back(sourceId);
+    reverse(result.stationIds.begin(), result.stationIds.end());
+    reverse(routeEdges.begin(), routeEdges.end());
+
+    // 6. Add up the chosen route's distance, ride time, and line changes.
+    string previousLine;
+    for (const auto& edge : routeEdges) {
+        result.totalDistanceKm += edge.distanceKm;
+        result.estimatedTravelTimeMinutes += edge.travelTimeMinutes;
+        if (edge.type == EdgeType::Ride) {
+            if (!previousLine.empty() && previousLine != edge.line) ++result.transferCount;
+            previousLine = edge.line;
+            result.segmentLines.push_back(edge.line);
+            if (result.linesUsed.empty() || result.linesUsed.back() != edge.line) {
+                result.linesUsed.push_back(edge.line);
+            }
+        } else if (edge.type == EdgeType::Transfer) {
+            ++result.transferCount;
+            previousLine.clear();
+            result.segmentLines.push_back("TRANSFER");
+        } else {
+            result.segmentLines.push_back("WALK");
         }
     }
     return result;
 }
-
 } // namespace metromitra

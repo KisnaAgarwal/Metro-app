@@ -35,15 +35,11 @@ A station is a vertex. A connection is an edge with distance, time, line, and ty
 
 ## Explain Dijkstra
 
-A priority queue chooses the cheapest unprocessed state. A state stores both the station and the line used to reach it, because arriving on different lines can change the cost of the next transfer.
+A min-heap chooses the cheapest candidate station. A lookup table stores one best cost and previous connection per station. Cheaper routes update that table and enter the heap. Following previous stations backward reconstructs the route.
 
-For each outgoing edge, the algorithm calculates a candidate cost. If it improves the known cost, it records the new cost and parent. Finally, it follows parents backward from the destination and reverses that list.
+Distance and time modes minimize the corresponding CSV edge weights. No extra dwell or interchange allowances are added. Fewest transfers is approximate because only one arrival line is retained per station; there is no time tie-breaker.
 
-- Fastest: minimize estimated travel time.
-- Shortest: minimize distance.
-- Fewest transfers: minimize line changes, using time to break ties.
-
-Time includes ride time and the configured dwell or line-change allowances. It is not a live timetable.
+See [the presentation guide](presentation_guide.md) for a small worked example and an explanation of the heap.
 
 ## Explain meetups
 

@@ -27,3 +27,5 @@ Platform directions are stored separately in `backend/data/station_platforms.csv
 7. Fare estimates, sequential-pickup group planning, and live service data remain future work.
 
 Start with [the code walkthrough](docs/code_walkthrough.md) for a file-by-file explanation and presentation guide. See `docs/` for algorithms, architecture, and data sources.
+
+For a beginner-friendly algorithm explanation, read [the presentation guide](docs/presentation_guide.md). Routing uses min-heap Dijkstra with one record per station. Time estimates sum CSV edge times; fewest-transfers mode is approximate.
