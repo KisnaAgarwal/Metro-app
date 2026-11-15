@@ -1,0 +1,4 @@
+id,physical_station_id,name,line,latitude,longitude,interchange
+demo_a,demo_a,Demo Station A,Demo Line,,,false
+demo_b,demo_b,Demo Station B,Demo Line,,,false
+demo_c,demo_c,Demo Station C,Demo Line,,,false

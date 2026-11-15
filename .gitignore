@@ -1,0 +1,5 @@
+*.o
+*.obj
+*.exe
+__MACOSX/
+.DS_Store
