@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://unpkg.com" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/styles.css" />
-    <link rel="stylesheet" href="/transit.css" />
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="/app.js"></script>
   </head>
@@ -25,7 +24,6 @@
             </div>
             <div class="card-heading" data-single-trip>
               <div><h2>Choose your stations</h2></div>
-              <span class="heading-icon" aria-hidden="true">↗</span>
             </div>
 
             <div class="station-fields" data-single-trip>
@@ -55,7 +53,6 @@
             </div>
 
             <button id="find-route" class="find-button" data-single-trip type="button"><span>Find my route</span><span aria-hidden="true">→</span></button>
-            
 
             <section id="route-results" class="route-results hidden" data-single-trip aria-live="polite">
               <div class="results-title"><div><h2 id="route-heading">—</h2></div><span id="route-mode-tag" class="route-mode-tag">FASTEST</span></div>
@@ -68,9 +65,9 @@
             </section>
 
             <section id="meetup-panel" class="meetup-panel hidden" aria-label="Plan a meetup for friends">
-              
+
               <h2>Where should everyone meet?</h2>
-              
+
               <label class="friend-destination-field" for="meetup-destination"><span class="field-label">DESTINATION (OPTIONAL)</span><input id="meetup-destination" list="station-options" placeholder="Meet on the way to a final station" autocomplete="off" /></label>
               <div id="friend-stations" class="friend-stations">
                 <label class="friend-station-row"><span class="friend-number">1</span><input data-friend-station list="station-options" placeholder="Friend 1 starting station" autocomplete="off" /></label>
@@ -78,7 +75,7 @@
               </div>
               <button id="add-friend" class="add-friend-button" type="button">＋ Add a friend</button>
               <button id="find-meetup" class="find-button" type="button"><span>Find meetup station</span><span aria-hidden="true">→</span></button>
-              
+
               <section id="meetup-results" class="meetup-results hidden" aria-live="polite"></section>
             </section>
           </aside>
@@ -101,6 +98,3 @@
     <div id="toast" class="toast" role="status"></div>
   </body>
 </html>
-
-
-

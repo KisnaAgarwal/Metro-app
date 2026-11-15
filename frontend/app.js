@@ -19,6 +19,7 @@ function stationLabel(station) {
   const lines = lineNames(station.line).join(' / ');
   return `${station.name} — ${lines}`;
 }
+// Feedback and API requests
 function showToast(message) {
   const toast = $('toast');
   toast.textContent = message;
@@ -39,6 +40,7 @@ async function api(path) {
   return body;
 }
 
+// Station selection
 function initStationOptions() {
   const list = $('station-options');
   list.replaceChildren(...stations.map((station) => {
@@ -75,10 +77,7 @@ function findStationFromInput(input) {
 function selectedStation(inputId) {
   return findStationFromInput($(inputId));
 }
-function selectedFriendStation(input) {
-  return findStationFromInput(input);
-}
-
+// Switch between a single journey and a meetup
 function showPlanner(mode) {
   const meetup = mode === 'meetup';
   document.querySelectorAll('[data-single-trip]').forEach((element) => element.classList.toggle('hidden', meetup));
@@ -145,6 +144,7 @@ function initModes() {
   });
 }
 
+// Map setup and route drawing
 function initMap() {
   if (!window.L) {
     showToast('The map library did not load. Check your internet connection and refresh.');
@@ -327,6 +327,7 @@ function renderMeetupMap(result) {
   }
 }
 
+// Build the meetup summary and individual journeys
 function renderMeetupResults(result) {
   const container = $('meetup-results');
   container.replaceChildren();
@@ -417,9 +418,10 @@ function renderMeetupResults(result) {
   renderMeetupMap(result);
 }
 
+// Submit planner requests
 async function findMeetup() {
   const inputs = [...$('friend-stations').querySelectorAll('[data-friend-station]')];
-  const origins = inputs.map(selectedFriendStation);
+  const origins = inputs.map(findStationFromInput);
   if (origins.length < 2 || origins.some((station) => !station)) {
     showToast('Choose a station for every friend from the suggestions.');
     return;
@@ -480,6 +482,7 @@ async function findRoute() {
   }
 }
 
+// Connect controls and load the initial station data
 function start() {
   initModes();
   $('find-route').addEventListener('click', findRoute);
@@ -507,4 +510,3 @@ function start() {
 }
 
 window.addEventListener('DOMContentLoaded', start);
-

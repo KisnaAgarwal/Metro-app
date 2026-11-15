@@ -14,6 +14,10 @@ const sources = [
   'backend/src/Traversal.cpp',
   'backend/src/Dijkstra.cpp',
   'backend/src/main.cpp',
+  'backend/src/Meetup.cpp',
+  'backend/src/JsonOutput.cpp',
+  'backend/include/Meetup.h',
+  'backend/include/JsonOutput.h',
   'backend/include/Station.h',
   'backend/include/Graph.h',
   'backend/include/CsvLoader.h',
@@ -22,11 +26,11 @@ const sources = [
 ];
 
 function ensureBackend() {
-  const stale = !existsSync(executable) || sources.some((file) =>
-    statSync(resolve(projectRoot, file)).mtimeMs > (existsSync(executable) ? statSync(executable).mtimeMs : 0));
+  const lastBuild = existsSync(executable) ? statSync(executable).mtimeMs : 0;
+  const stale = sources.some((file) => statSync(resolve(projectRoot, file)).mtimeMs > lastBuild);
   if (!stale) return;
   console.log('Building the C++ route engine...');
-  const args = ['-std=c++17', '-O2', '-Wall', '-Wextra', '-Wpedantic', '-Ibackend/include', ...sources, '-o', 'metromitra.exe'];
+  const args = ['-std=c++17', '-O2', '-Wall', '-Wextra', '-Wpedantic', '-Ibackend/include', ...sources.filter((file) => file.endsWith('.cpp')), '-o', 'metromitra.exe'];
   const build = spawnSync('g++', args, { cwd: projectRoot, encoding: 'utf8' });
   if (build.status !== 0) throw new Error(build.stderr || build.error?.message || 'g++ build failed');
   console.log('C++ route engine built.');

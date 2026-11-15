@@ -26,4 +26,4 @@ Platform directions are stored separately in `backend/data/station_platforms.csv
 6. Platform-number guidance from verified DMRC station pages (partial coverage; additional verified rows can be added to the platform CSV).
 7. Fare estimates, sequential-pickup group planning, and live service data remain future work.
 
-See `docs/` for the architecture, complexity plan, data provenance plan, and group-planner design considerations.
+Start with [the code walkthrough](docs/code_walkthrough.md) for a file-by-file explanation and presentation guide. See `docs/` for algorithms, architecture, and data sources.
