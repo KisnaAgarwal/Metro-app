@@ -40,7 +40,6 @@ async function api(path) {
 }
 
 function initStationOptions() {
-  $('station-count').textContent = stations.length;
   const list = $('station-options');
   list.replaceChildren(...stations.map((station) => {
     const option = document.createElement('option');
@@ -504,8 +503,8 @@ function start() {
     initMap();
   }).catch((error) => {
     showToast(error.message);
-    $('station-count').textContent = '—';
   });
 }
 
 window.addEventListener('DOMContentLoaded', start);
+
