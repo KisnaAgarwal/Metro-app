@@ -19,7 +19,7 @@ Platform directions are stored separately in `backend/data/station_platforms.csv
 ## Project status
 
 1. Core station/edge graph and synthetic fixture (implemented).
-2. Validated CSV loading and BFS/DFS algorithms (implemented).
+2. Validated CSV loading and graph building (implemented).
 3. Dijkstra distance/time and route reconstruction (implemented); fare estimates remain future work.
 4. 2023 GTFS station and connection import (implemented; see source and limitations).
 5. Transfer-aware routing, single-trip browser planner, route map, and friend meetup planner (implemented).

@@ -11,7 +11,6 @@ const port = Number(process.env.PORT || 4173);
 const sources = [
   'backend/src/Graph.cpp',
   'backend/src/CsvLoader.cpp',
-  'backend/src/Traversal.cpp',
   'backend/src/Dijkstra.cpp',
   'backend/src/main.cpp',
   'backend/src/Meetup.cpp',
@@ -21,7 +20,6 @@ const sources = [
   'backend/include/Station.h',
   'backend/include/Graph.h',
   'backend/include/CsvLoader.h',
-  'backend/include/Traversal.h',
   'backend/include/Dijkstra.h',
 ];
 
@@ -55,9 +53,6 @@ const server = createServer((request, response) => {
   try {
     if (request.method === 'GET' && url.pathname === '/api/stations') {
       return sendJson(response, 200, backendJson(['--json-stations']));
-    }
-    if (request.method === 'GET' && url.pathname === '/api/network') {
-      return sendJson(response, 200, backendJson(['--json-network']));
     }
     if (request.method === 'GET' && url.pathname === '/api/platforms') {
       const rows = readFileSync(resolve(projectRoot, 'backend/data/station_platforms.csv'), 'utf8')

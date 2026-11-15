@@ -8,6 +8,4 @@ Fewest-transfers mode is approximate because line-change cost depends on the arr
 
 For distance/time searches, time is O((V+E) log(V+E)) and auxiliary space is O(V+E), accounting for duplicate heap entries. The network uses nonnegative weights.
 
-BFS and DFS remain educational traversal examples, each taking O(V+E) time and O(V) auxiliary space. They are not called by the browser route planner.
-
 See [the presentation guide](presentation_guide.md) for a worked example, a heap explanation, and questions to prepare for.

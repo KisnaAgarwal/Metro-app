@@ -24,7 +24,6 @@ The graph is loaded for each command. There is no database or persistent backend
 | `backend/src/Meetup.cpp` | Choose where friends meet and write the meetup response |
 | `backend/src/JsonOutput.cpp` | Escape text and write station JSON |
 | `backend/src/main.cpp` | Command dispatch and single-route output |
-| `backend/src/Traversal.cpp` | BFS and DFS learning examples; not used by the browser planner |
 | `frontend/server.mjs` | Compile when needed, serve files, and bridge HTTP to C++ |
 | `frontend/app.js` | Inputs, API calls, results, and map drawing |
 | `frontend/styles.css` | All interface styling, including mobile layouts |
@@ -51,7 +50,7 @@ With a destination, consider shared stations on friends' routes to that destinat
 
 `backend/data/stations.csv` and `connections.csv` are the runtime network. The platform CSV supplies optional transfer guidance. Sample CSVs support small demonstrations; the source GTFS files and import script document how the network was produced.
 
-BFS, DFS, source data, and sample fixtures are retained for learning and reproducibility. They are separate from the browser request flow.
+Source data and sample fixtures are retained for reproducibility. They are separate from the browser request flow.
 
 ## Run
 
