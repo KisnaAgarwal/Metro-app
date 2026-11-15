@@ -54,13 +54,30 @@ function initStationOptions() {
   if (destination) $('destination').value = stationLabel(destination);
 }
 
+function normalizeStationSearch(value) {
+  return (value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function findStationFromInput(input) {
+  const query = normalizeStationSearch(input.value);
+  if (!query) return null;
+  const exactLabel = stations.find((station) => normalizeStationSearch(stationLabel(station)) === query);
+  if (exactLabel) return exactLabel;
+
+  const exactNames = stations.filter((station) => normalizeStationSearch(station.name) === query);
+  if (exactNames.length === 1) return exactNames[0];
+  if (exactNames.length > 1) return null;
+
+  const matches = stations.filter((station) => normalizeStationSearch(station.name).includes(query));
+  return matches.length === 1 ? matches[0] : null;
+}
+
 function selectedStation(inputId) {
-  const value = $(inputId).value.trim();
-  return stations.find((station) => stationLabel(station) === value);
+  return findStationFromInput($(inputId));
 }
 function selectedFriendStation(input) {
-  const value = input.value.trim();
-  return stations.find((station) => stationLabel(station) === value);
+  return findStationFromInput(input);
 }
 
 function showPlanner(mode) {
