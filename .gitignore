@@ -3,3 +3,4 @@
 *.exe
 __MACOSX/
 .DS_Store
+build/

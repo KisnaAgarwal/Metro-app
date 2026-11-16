@@ -23,28 +23,25 @@ struct StationRecord {
 RouteResult shortestRoute(const Graph& graph, const string& sourceId,
                           const string& destinationId, RouteObjective objective) {
     if (!graph.findStation(sourceId) || !graph.findStation(destinationId)) {
-        throw invalid_argument("Unknown starting or destination station");
+        throw invalid_argument("no metro station ");
     }
 
-    // 1. Start with cost 0 at the source. Other stations start at infinity.
+    // start ko 0
     unordered_map<string, StationRecord> best;
     best[sourceId].cost = 0;
 
-    // A min-heap gives us the cheapest station first.
-    // Each entry is (cost, station ID). greater makes the smallest cost come first.
     using Entry = pair<double, string>;
     priority_queue<Entry, vector<Entry>, greater<Entry>> pending;
     pending.push({0, sourceId});
 
     while (!pending.empty()) {
-        // 2. Take the cheapest station waiting in the heap.
         const auto [cost, currentId] = pending.top();
         pending.pop();
         const auto current = best.at(currentId);
-        if (cost > current.cost) continue; // An older, more expensive heap entry.
+        if (cost > current.cost) continue;
         if (currentId == destinationId) break;
 
-        // 3. Try each directly connected station.
+        // 3kisna ye wala kar de please
         for (const auto& edge : graph.neighbors(currentId)) {
             bool changesLine = edge.type == EdgeType::Transfer;
             if (edge.type == EdgeType::Ride && !current.arrivalLine.empty() &&
@@ -60,7 +57,7 @@ RouteResult shortestRoute(const Graph& graph, const string& sourceId,
             auto& next = best[edge.destinationId];
             if (newCost >= next.cost) continue;
 
-            // 4. Found a cheaper route: remember how we got here and try it later.
+            // update kardo better route mil gaya
             next.cost = newCost;
             next.previousStation = currentId;
             next.previousEdge = edge;
@@ -71,9 +68,9 @@ RouteResult shortestRoute(const Graph& graph, const string& sourceId,
         }
     }
 
-    if (best.find(destinationId) == best.end()) return {}; // No route exists.
+    if (best.find(destinationId) == best.end()) return {};
 
-    // 5. Follow previous stations from destination back to source, then reverse.
+    // reversed the ans rushil pls add to JSON output
     RouteResult result;
     vector<Edge> routeEdges;
     string stationId = destinationId;
@@ -86,7 +83,7 @@ RouteResult shortestRoute(const Graph& graph, const string& sourceId,
     reverse(result.stationIds.begin(), result.stationIds.end());
     reverse(routeEdges.begin(), routeEdges.end());
 
-    // 6. Add up the chosen route's distance, ride time, and line changes.
+    // got more info
     string previousLine;
     for (const auto& edge : routeEdges) {
         result.totalDistanceKm += edge.distanceKm;
@@ -108,4 +105,4 @@ RouteResult shortestRoute(const Graph& graph, const string& sourceId,
     }
     return result;
 }
-} // namespace metromitra
+}

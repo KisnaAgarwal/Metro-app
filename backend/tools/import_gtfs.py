@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Convert a DMRC GTFS ZIP snapshot to MetroMitra station/edge CSV files.
-
-Uses only GTFS records in the archive. Edge distances use shape_dist_traveled
-where available; missing segment distances use a Haversine straight-line estimate.
-Travel minutes are median scheduled segment times across trips/directions.
+"""Convert a DMRC GTFS ZIP snapshot to CSV.
 """
 import argparse
 import csv
